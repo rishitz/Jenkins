@@ -14,3 +14,5 @@ add docker host url and test connection.
 add docker agent template.-> Add your dockerhub imageurl.-> Connect with SSh -> Add your remote rrot dir.->Add ssh Credentials that you mentioned in docker file.
 
 then create free style projects and add label and execute in shell.
+
+(Source: https://devopscube.com/docker-containers-as-build-slaves-jenkins/#:~:text=It%20is%20better%20to%20use,the%20project%2C%20and%20is%20destroyed)
