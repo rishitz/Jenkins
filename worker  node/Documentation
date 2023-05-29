@@ -1,0 +1,15 @@
+1) Install SSh Agent plugin
+   Configure via pipeline syntax with Apply username of that server and private key from copy putty.
+
+2) Add maven path in Jenkins.
+
+3) Add worker node. ad click on launch agent.
+so it will create workspace on node (In the path of your remote working dir. on the host)
+Shh Agent is used to scp only.
+
+4) Add Dockerhub credentials in jenkins and referenve in jenkinsfile environmnets section
+
+5) Create webhooks in github and add its code into checkout stage.
+
+
+
