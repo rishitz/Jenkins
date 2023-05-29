@@ -1,0 +1,16 @@
+Install Docker plugins in jenkins.
+
+Add the exec commad in doicker host.
+
+Create docker file:
+1) Insall open ssh in order to connect to the ubuntu container.
+2)Install java packages over there.
+3) Add jenkins user and change its password.
+4) Expose ssh port 22.
+
+
+Configure docker node as a cloud in jenkins.
+add docker host url and test connection.
+add docker agent template.-> Add your dockerhub imageurl.-> Connect with SSh -> Add your remote rrot dir.->Add ssh Credentials that you mentioned in docker file.
+
+then create free style projects and add label and execute in shell.
