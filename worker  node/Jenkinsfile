@@ -1,0 +1,98 @@
+properties([pipelineTriggers([githubPush()])])
+
+pipeline {
+    
+    environment{
+   Dockercred= credentials(‘mycred’)
+      }
+
+    
+    agent {
+       label 'master-node'
+    }
+    
+
+    stages {
+       
+       stage('Checkout SCM') {
+            steps {
+                checkout([
+                 $class: 'GitSCM',
+                 branches: [[name: 'main']],
+                 userRemoteConfigs: [[
+                    url: 'https://github.com/rishitz/WebHooks.git',
+                    credentialsId: '',
+                 ]]
+                ])
+            }
+        }
+       
+       
+        stage('Mvn Build') {
+            steps {
+                sh 'mvn clean install'
+                mv 'target/.war target/rishit.war'
+            }
+        }
+         stage('Copy War') {
+            steps {
+               sshagent(['b34132aa-6fcc-4f26-9039-968e11b0e7ee']) {
+              sh 'scp -o StrictHostKeychecking=no rishit.war ubuntu@16.171.2.69:/home/ubuntu/workspace/demo'
+                  }
+            }
+        }
+        
+         stage('Build Image') {
+              agent{
+                label 'docker-slave'
+                }
+                
+            steps {
+             sh 'docker build -t rishit80/nodeapp:$BUILD_NUMBER .'
+              sh 'docker run -d -p 8084:8080 nodeapp'
+            }
+        }
+        
+         stage('Login Docker Hub') {
+              agent{
+                label 'docker-slave'
+                }
+                
+            steps {
+             sh 'docker login -u $Dockercred_USR --password $Dockercred_PSW'
+             
+            }
+        }
+        
+        stage('Push on DockerHub') {
+              agent{
+                label 'docker-slave'
+                }
+                
+            steps {
+             sh 'docker push rishit/nodeaap:$BUILD_NUMBER'
+            }
+        }
+        
+        stage('production')
+        {
+            steps {
+                Input {
+                message: "Should we continue?”
+                Ok “Yes We should”
+                }
+
+            }
+        }
+        
+        
+    }
+    
+    Post {
+ Always{
+ Sh ‘docker logout’
+ }
+ }
+ 
+
+}
